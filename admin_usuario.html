@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Nuevo Usuario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; min-height: 100vh; margin: 0; background-color: #121212; }
+        .sidebar {
+            width: 250px; background-color: #000; border-right: 2px solid #1E90FF;
+            padding: 20px; display: flex; flex-direction: column; gap: 20px;
+        }
+        .sidebar h2 { color: #39FF14; font-size: 1.5rem; text-align: center; margin-bottom: 30px; }
+        .sidebar a {
+            color: #D3D3D3; text-decoration: none; font-weight: bold;
+            padding: 15px; border-radius: 5px; transition: background 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active { background-color: #1E90FF; color: #FFF; }
+        .admin-content { flex: 1; padding: 40px; }
+        .form-admin {
+            background-color: #1a1a1a; padding: 30px; border-radius: 8px; border: 1px solid #333;
+            max-width: 800px; margin: 0 auto;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; color: #39FF14; font-family: 'Orbitron', sans-serif; margin-bottom: 5px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; background-color: #000; border: 1px solid #333;
+            color: #FFF; border-radius: 4px; font-family: 'Roboto', sans-serif;
+        }
+        .error-message { color: #ff4d4d; font-size: 0.85rem; margin-top: 5px; display: none; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>ADMIN PANEL</h2>
+        <a href="#">Dashboard (Home)</a>
+        <a href="admin_producto.html">Productos</a>
+        <a href="admin_usuario.html" class="active">Usuarios</a>
+        <a href="index.html" style="margin-top: auto; color: #ff4d4d;">Cerrar Sesión</a>
+    </aside>
+
+    <main class="admin-content">
+        <h1 style="margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 10px;">NUEVO USUARIO</h1>
+        
+        <form class="form-admin" id="formNuevoUsuario">
+            <div style="display: flex; gap: 20px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="run">RUN * (Sin puntos ni guion)</label>
+                    <input type="text" id="run" placeholder="Ej: 19011022K">
+                    <div id="err-run" class="error-message">Requerido. Entre 7 y 9 caracteres, sin puntos ni guion.</div>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="rol">Tipo de Usuario *</label>
+                    <select id="rol">
+                        <option value="">-- Seleccionar Rol --</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Vendedor">Vendedor</option>
+                        <option value="Cliente">Cliente</option>
+                    </select>
+                    <div id="err-rol" class="error-message">Debe seleccionar un rol.</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="nombre">Nombres *</label>
+                    <input type="text" id="nombre" placeholder="Máx 50 caracteres">
+                    <div id="err-nombre" class="error-message">Requerido. Máximo 50 caracteres.</div>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="apellidos">Apellidos *</label>
+                    <input type="text" id="apellidos" placeholder="Máx 100 caracteres">
+                    <div id="err-apellidos" class="error-message">Requerido. Máximo 100 caracteres.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico *</label>
+                <input type="email" id="correo" placeholder="correo@duoc.cl">
+                <div id="err-correo" class="error-message">Requerido. Máx 100 caracteres. Dominios: @duoc.cl, @profesor.duoc.cl, @gmail.com.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="fechaNacimiento">Fecha de Nacimiento (Opcional)</label>
+                <input type="date" id="fechaNacimiento">
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="region">Región *</label>
+                    <select id="region">
+                        <option value="">-- Seleccione Región --</option>
+                    </select>
+                    <div id="err-region" class="error-message">Debe seleccionar una región.</div>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="comuna">Comuna *</label>
+                    <select id="comuna" disabled>
+                        <option value="">-- Seleccione Comuna --</option>
+                    </select>
+                    <div id="err-comuna" class="error-message">Debe seleccionar una comuna.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección *</label>
+                <input type="text" id="direccion" placeholder="Máx 300 caracteres">
+                <div id="err-direccion" class="error-message">Requerido. Máximo 300 caracteres.</div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">CREAR USUARIO</button>
+        </form>
+    </main>
+
+    <script src="admin_usuario.js"></script>
+</body>
+</html>
