@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level-Up Gamer | Nosotros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .about-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .about-section {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 4px solid #39FF14;
+        }
+        .about-section h2 {
+            color: #1E90FF;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .team-member {
+            background-color: #121212;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .team-member h3 { color: #39FF14; margin-bottom: 5px; }
+        .team-member p { color: #D3D3D3; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>LEVEL-UP GAMER</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li><a href="nosotros.html" class="active">Nosotros</a></li>
+                <li><a href="blogs.html">Blogs</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="login.html" class="btn-secondary">Iniciar sesión</a>
+            <a href="registro.html" class="btn-secondary">Registrar usuario</a>
+            <a href="carrito.html" class="cart-icon" id="cart-counter">🛒 Cart (0)</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="about-container">
+            <h1 class="section-title" style="text-align: center; color: #FFF;">SOBRE NOSOTROS</h1>
+            
+            <div class="about-section">
+                <h2>Nuestra Historia</h2>
+                <p>Level-Up Gamer es una tienda online dedicada a satisfacer las necesidades de los entusiastas de los videojuegos en Chile. Lanzada hace dos años como respuesta a la creciente demanda durante la pandemia, ofrecemos una amplia gama de productos para gamers, desde consolas y accesorios hasta computadores y sillas especializadas[cite: 2, 5]. Aunque no contamos con ubicación física, llegamos a todo el país[cite: 2, 5].</p>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div class="about-section" style="flex: 1; border-left-color: #1E90FF;">
+                    <h2>Misión</h2>
+                    <p>Proporcionar productos de alta calidad para gamers en todo Chile, ofreciendo una experiencia de compra única y personalizada, con un enfoque en la satisfacción del cliente y el crecimiento de la comunidad gamer[cite: 2, 5].</p>
+                </div>
+                <div class="about-section" style="flex: 1; border-left-color: #1E90FF;">
+                    <h2>Visión</h2>
+                    <p>Ser la tienda online líder en productos para gamers en Chile, reconocida por su innovación, servicio al cliente excepcional, y un programa de fidelización basado en gamificación que recompense a nuestros clientes más fieles[cite: 2, 5].</p>
+                </div>
+            </div>
+
+            <div class="about-section" style="border-left: none; background-color: transparent; padding: 0;">
+                <h2 style="text-align: center;">Nuestro Equipo de Desarrollo</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <h3>Daniel Muñoz</h3>
+                        <p>Desarrollador Fullstack</p>
+                        <p style="margin-top: 10px; font-style: italic;">Encargado de la lógica de JavaScript, validaciones de formularios y gestión del carrito de compras.</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Matias Lopez</h3>
+                        <p>Desarrollador Frontend</p>
+                        <p style="margin-top: 10px; font-style: italic;">Encargado de la maquetación HTML y estilos CSS de la plataforma.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Level-Up Gamer. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let carrito = JSON.parse(localStorage.getItem('carritoLevelUp')) || [];
+            const counter = document.getElementById('cart-counter');
+            const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+            if(counter) counter.innerText = `🛒 Cart (${totalItems})`;
+        });
+    </script>
+</body>
+</html>
