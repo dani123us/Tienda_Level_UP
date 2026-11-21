@@ -52,10 +52,11 @@ const textoRequerido = (valor, maximo) => {
   return limpio !== '' && limpio.length <= maximo
 }
 
+/** En el login solo se exige que la contraseña venga; si es correcta lo decide el backend (401). */
 export function validarLogin({ correo, password }) {
   const errores = {}
   if (!validarCorreo(correo)) errores.correo = MENSAJES.correo
-  if (!validarPassword(password)) errores.password = MENSAJES.password
+  if (!password) errores.password = 'Ingresa tu contraseña.'
   return errores
 }
 
