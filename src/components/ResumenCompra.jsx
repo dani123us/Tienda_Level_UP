@@ -67,7 +67,7 @@ function ResumenCompra({ resumen, esDuoc, cupon, errorCupon, onAplicarCupon, onP
       </Form>
 
       <Button variant="neon" size="lg" className="w-100" onClick={onPagar} disabled={sinProductos}>
-        PAGAR
+        Ir a pagar
       </Button>
       {!esDuoc && (
         <p className="small texto-suave mt-3 mb-0">

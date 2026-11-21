@@ -1,20 +1,13 @@
 import { useState } from 'react'
 import { Container, Row, Col, Alert } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ItemCarrito from '../components/ItemCarrito.jsx'
 import ResumenCompra from '../components/ResumenCompra.jsx'
-import { formatearPrecio } from '../utils/formato.js'
-import {
-  calcularResumen,
-  contarUnidades,
-  esCorreoDuoc,
-  obtenerDescuentoCupon,
-} from '../utils/carrito.js'
+import { calcularResumen, esCorreoDuoc, obtenerDescuentoCupon } from '../utils/carrito.js'
 
-function Carrito({ items, usuario, onCambiarCantidad, onQuitar, onPagar }) {
-  const [cupon, setCupon] = useState(null)
+function Carrito({ items, usuario, cupon, onCambiarCupon, onCambiarCantidad, onQuitar }) {
+  const navigate = useNavigate()
   const [errorCupon, setErrorCupon] = useState('')
-  const [compraFinalizada, setCompraFinalizada] = useState(null)
 
   const esDuoc = usuario ? esCorreoDuoc(usuario.correo) : false
   const resumen = calcularResumen(items, { esDuoc, porcentajeCupon: cupon?.porcentaje ?? 0 })
@@ -22,37 +15,17 @@ function Carrito({ items, usuario, onCambiarCantidad, onQuitar, onPagar }) {
   function aplicarCupon(codigo) {
     const porcentaje = obtenerDescuentoCupon(codigo)
     if (porcentaje === 0) {
-      setCupon(null)
+      onCambiarCupon(null)
       setErrorCupon('Cupón inválido o expirado.')
       return
     }
-    setCupon({ codigo: codigo.trim().toUpperCase(), porcentaje })
+    onCambiarCupon({ codigo: codigo.trim().toUpperCase(), porcentaje })
     setErrorCupon('')
   }
 
-  function pagar() {
-    setCompraFinalizada({ total: resumen.total, unidades: contarUnidades(items) })
-    setCupon(null)
-    onPagar()
-  }
-
-  if (compraFinalizada) {
-    return (
-      <Container as="section" className="py-5" style={{ maxWidth: 700 }}>
-        <Alert variant="success" className="text-center p-4">
-          <Alert.Heading className="fuente-titulos">¡Gracias por tu compra en Level-Up Gamer!</Alert.Heading>
-          <p className="mb-0">
-            Pagaste <strong>{formatearPrecio(compraFinalizada.total)}</strong> por{' '}
-            {compraFinalizada.unidades} {compraFinalizada.unidades === 1 ? 'producto' : 'productos'}.
-          </p>
-        </Alert>
-        <div className="text-center">
-          <Link to="/productos" className="btn btn-neon">
-            Seguir comprando
-          </Link>
-        </div>
-      </Container>
-    )
+  // Si no hay sesión, la ruta /checkout manda al login y luego vuelve al checkout.
+  function irAPagar() {
+    navigate('/checkout')
   }
 
   return (
@@ -70,6 +43,11 @@ function Carrito({ items, usuario, onCambiarCantidad, onQuitar, onPagar }) {
               <ItemCarrito key={item.id} item={item} onCambiarCantidad={onCambiarCantidad} onQuitar={onQuitar} />
             ))
           )}
+          {!usuario && items.length > 0 && (
+            <Alert variant="info" className="small">
+              Para pagar necesitas <Alert.Link as={Link} to="/login" state={{ desde: '/checkout' }}>iniciar sesión</Alert.Link>.
+            </Alert>
+          )}
         </Col>
         <Col lg={4}>
           <div className="sticky-lg-top" style={{ top: 100 }}>
@@ -79,7 +57,7 @@ function Carrito({ items, usuario, onCambiarCantidad, onQuitar, onPagar }) {
               cupon={cupon}
               errorCupon={errorCupon}
               onAplicarCupon={aplicarCupon}
-              onPagar={pagar}
+              onPagar={irAPagar}
               sinProductos={items.length === 0}
             />
           </div>
