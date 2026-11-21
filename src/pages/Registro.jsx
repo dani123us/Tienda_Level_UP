@@ -1,12 +1,15 @@
 import { useState } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import CampoFormulario from '../components/CampoFormulario.jsx'
 import SelectorRegionComuna from '../components/SelectorRegionComuna.jsx'
+import { useSesion } from '../context/SesionContext.jsx'
 import { validarRegistro, hayErrores } from '../utils/validaciones.js'
 
 const formularioVacio = {
+  run: '',
   nombre: '',
+  apellidos: '',
   correo: '',
   fechaNacimiento: '',
   password: '',
@@ -14,55 +17,96 @@ const formularioVacio = {
   telefono: '',
   region: '',
   comuna: '',
+  direccion: '',
 }
 
-function Registro({ usuarios, onRegistrar }) {
+function Registro({ onAviso = () => {} }) {
   const navigate = useNavigate()
+  const { registrar } = useSesion()
   const [datos, setDatos] = useState(formularioVacio)
   const [errores, setErrores] = useState({})
+  const [errorGeneral, setErrorGeneral] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
   function manejarCambio(evento) {
     setDatos({ ...datos, [evento.target.name]: evento.target.value })
   }
 
-  function enviar(evento) {
+  async function enviar(evento) {
     evento.preventDefault()
-    const nuevosErrores = validarRegistro(datos, usuarios)
+    const nuevosErrores = validarRegistro(datos)
     setErrores(nuevosErrores)
+    setErrorGeneral('')
     if (hayErrores(nuevosErrores)) return
 
-    onRegistrar({
-      run: '',
-      nombre: datos.nombre.trim(),
-      apellidos: '',
-      correo: datos.correo.trim().toLowerCase(),
-      password: datos.password,
-      rol: 'Cliente',
-      fechaNacimiento: datos.fechaNacimiento,
-      region: datos.region,
-      comuna: datos.comuna,
-      direccion: '',
-      telefono: datos.telefono.trim(),
-    })
-    navigate('/login', {
-      state: { mensaje: '¡Registro exitoso! Bienvenido a Level-Up Gamer, ya puedes iniciar sesión.', tipo: 'success' },
-    })
+    setEnviando(true)
+    try {
+      const usuario = await registrar({
+        run: datos.run.trim().toUpperCase(),
+        nombre: datos.nombre.trim(),
+        apellidos: datos.apellidos.trim(),
+        correo: datos.correo.trim().toLowerCase(),
+        password: datos.password,
+        fechaNacimiento: datos.fechaNacimiento,
+        region: datos.region,
+        comuna: datos.comuna,
+        direccion: datos.direccion.trim(),
+        telefono: datos.telefono.trim(),
+      })
+      onAviso({ tipo: 'exito', mensaje: `¡Registro exitoso! Bienvenido a Level-Up Gamer, ${usuario.nombre}.` })
+      navigate('/')
+    } catch (error) {
+      // 409: correo o RUN repetido. 400: errores de validación por campo.
+      if (error.campos) {
+        setErrores(error.campos)
+      } else if (error.estado === 409 && /correo/i.test(error.message)) {
+        setErrores({ correo: error.message })
+      } else if (error.estado === 409 && /run/i.test(error.message)) {
+        setErrores({ run: error.message })
+      }
+      setErrorGeneral(error.message)
+      setEnviando(false)
+    }
   }
 
   return (
-    <Container as="section" className="py-5" style={{ maxWidth: 680 }}>
+    <Container as="section" className="py-5" style={{ maxWidth: 720 }}>
       <div className="panel-formulario p-4 p-md-5">
         <h1 className="titulo-seccion text-center h3 mb-4">Registro de Usuario</h1>
 
+        {errorGeneral && <Alert variant="danger">{errorGeneral}</Alert>}
+
         <Form noValidate onSubmit={enviar}>
           <CampoFormulario
-            id="nombre"
-            etiqueta="NOMBRE COMPLETO *"
-            placeholder="Ej: Juan Pérez"
-            value={datos.nombre}
-            error={errores.nombre}
+            id="run"
+            etiqueta="RUN * (sin puntos ni guion)"
+            placeholder="Ej: 19011022K"
+            value={datos.run}
+            error={errores.run}
             onChange={manejarCambio}
           />
+          <Row>
+            <Col md={6}>
+              <CampoFormulario
+                id="nombre"
+                etiqueta="NOMBRES *"
+                placeholder="Ej: Juan"
+                value={datos.nombre}
+                error={errores.nombre}
+                onChange={manejarCambio}
+              />
+            </Col>
+            <Col md={6}>
+              <CampoFormulario
+                id="apellidos"
+                etiqueta="APELLIDOS *"
+                placeholder="Ej: Pérez Soto"
+                value={datos.apellidos}
+                error={errores.apellidos}
+                onChange={manejarCambio}
+              />
+            </Col>
+          </Row>
           <CampoFormulario
             id="correo"
             etiqueta="CORREO *"
@@ -122,9 +166,17 @@ function Registro({ usuarios, onRegistrar }) {
             errores={errores}
             onCambiar={(cambios) => setDatos({ ...datos, ...cambios })}
           />
+          <CampoFormulario
+            id="direccion"
+            etiqueta="DIRECCIÓN *"
+            placeholder="Calle, número, depto."
+            value={datos.direccion}
+            error={errores.direccion}
+            onChange={manejarCambio}
+          />
 
-          <Button type="submit" variant="neon" className="w-100 mt-2">
-            REGISTRAR
+          <Button type="submit" variant="neon" className="w-100 mt-2" disabled={enviando}>
+            {enviando ? 'REGISTRANDO...' : 'REGISTRAR'}
           </Button>
         </Form>
 
