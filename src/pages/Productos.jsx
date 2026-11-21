@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Container, Row, Col, Form } from 'react-bootstrap'
 import Catalogo from '../components/Catalogo.jsx'
 import FiltroCategorias from '../components/FiltroCategorias.jsx'
+import EstadoCarga from '../components/EstadoCarga.jsx'
 import { obtenerCategorias, filtrarProductos } from '../utils/productos.js'
 
-function Productos({ productos, onAgregarCarrito }) {
+function Productos({ productos, cargando, error, onReintentar, onAgregarCarrito }) {
   const [categoria, setCategoria] = useState('Todas')
   const [busqueda, setBusqueda] = useState('')
 
@@ -30,14 +31,16 @@ function Productos({ productos, onAgregarCarrito }) {
         </Col>
       </Row>
 
-      <p className="texto-suave small" aria-live="polite">
-        Mostrando {visibles.length} de {productos.length} productos
-      </p>
-      <Catalogo
-        productos={visibles}
-        onAgregarCarrito={onAgregarCarrito}
-        mensajeVacio="No encontramos productos con ese filtro."
-      />
+      <EstadoCarga cargando={cargando} error={error} onReintentar={onReintentar}>
+        <p className="texto-suave small" aria-live="polite">
+          Mostrando {visibles.length} de {productos.length} productos
+        </p>
+        <Catalogo
+          productos={visibles}
+          onAgregarCarrito={onAgregarCarrito}
+          mensajeVacio="No encontramos productos con ese filtro."
+        />
+      </EstadoCarga>
     </Container>
   )
 }

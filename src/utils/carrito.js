@@ -60,9 +60,21 @@ export function calcularResumen(carrito, { esDuoc = false, porcentajeCupon = 0 }
   return { subtotal, porcentaje, descuento, total: subtotal - descuento }
 }
 
-export function descontarStock(productos, carrito) {
-  return productos.map((producto) => {
-    const item = carrito.find((i) => i.id === producto.id)
-    return item ? { ...producto, stock: Math.max(producto.stock - item.cantidad, 0) } : producto
-  })
+/** Lo que se guarda en localStorage: solo el id y la cantidad de cada producto. */
+export function aIdsCantidades(items) {
+  return items.map(({ id, cantidad }) => ({ id, cantidad }))
+}
+
+/**
+ * Rehidrata el carrito guardado ({id, cantidad}) con los datos frescos de los productos del backend.
+ * Los productos que ya no existen se descartan y la cantidad no puede superar el stock actual.
+ */
+export function hidratarCarrito(guardado, productos) {
+  return guardado
+    .map(({ id, cantidad }) => {
+      const producto = productos.find((p) => p.id === id)
+      if (!producto) return null
+      return { ...producto, cantidad: Math.min(cantidad, producto.stock) }
+    })
+    .filter((item) => item && item.cantidad > 0)
 }

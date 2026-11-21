@@ -2,6 +2,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Portada from '../components/Portada.jsx'
 import Catalogo from '../components/Catalogo.jsx'
+import EstadoCarga from '../components/EstadoCarga.jsx'
 
 const beneficios = [
   { icono: '🎓', titulo: '20% Duoc', texto: 'Regístrate con tu correo @duoc.cl y obtén descuento permanente.' },
@@ -9,7 +10,7 @@ const beneficios = [
   { icono: '🏆', titulo: 'Comunidad', texto: 'Tus compras apoyan eventos y torneos gamer locales.' },
 ]
 
-function Inicio({ productos, onAgregarCarrito }) {
+function Inicio({ productos, cargando, error, onReintentar, onAgregarCarrito }) {
   const destacados = productos.filter((p) => p.destacado).slice(0, 4)
 
   return (
@@ -18,7 +19,9 @@ function Inicio({ productos, onAgregarCarrito }) {
 
       <Container as="section" className="py-5">
         <h2 className="titulo-seccion text-center mb-4">Productos Destacados</h2>
-        <Catalogo productos={destacados} onAgregarCarrito={onAgregarCarrito} />
+        <EstadoCarga cargando={cargando} error={error} onReintentar={onReintentar}>
+          <Catalogo productos={destacados} onAgregarCarrito={onAgregarCarrito} />
+        </EstadoCarga>
         <div className="text-center mt-4">
           <Link to="/productos" className="btn btn-outline-azul">
             Ver catálogo completo

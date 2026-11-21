@@ -4,3 +4,8 @@ export function formatearPrecio(valor) {
     currency: 'CLP',
   })
 }
+
+export function formatearFecha(fechaIso) {
+  if (!fechaIso) return ''
+  return new Date(fechaIso).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' })
+}
