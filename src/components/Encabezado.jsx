@@ -53,9 +53,14 @@ function Encabezado({ cantidadCarrito, usuario, onCerrarSesion }) {
                 <Navbar.Text className="me-lg-1">
                   Hola, <strong className="texto-verde">{usuario.nombre}</strong>
                 </Navbar.Text>
-                {usuario.rol === 'Administrador' && (
+                {(usuario.rol === 'Administrador' || usuario.rol === 'Vendedor') && (
                   <Nav.Link as={NavLink} to="/admin" onClick={cerrarMenu}>
-                    Panel admin
+                    {usuario.rol === 'Vendedor' ? 'Panel vendedor' : 'Panel admin'}
+                  </Nav.Link>
+                )}
+                {usuario.rol === 'Cliente' && (
+                  <Nav.Link as={NavLink} to="/mis-compras" onClick={cerrarMenu}>
+                    Mis compras
                   </Nav.Link>
                 )}
                 <Button
