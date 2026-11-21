@@ -1,8 +1,8 @@
+// Solo se guardan en localStorage el carrito (ids y cantidades) y el refresh token.
+// Los productos y usuarios vienen del backend; la contraseña y el usuario completo nunca se guardan.
 export const CLAVES = {
   carrito: 'carritoLevelUp',
-  productos: 'productosLevelUp',
-  usuarios: 'usuariosLevelUp',
-  sesion: 'sesionLevelUp',
+  refresh: 'refreshLevelUp',
 }
 
 export function leerDatos(clave, valorPorDefecto) {
@@ -20,5 +20,13 @@ export function guardarDatos(clave, valor) {
     return true
   } catch {
     return false
+  }
+}
+
+export function borrarDato(clave) {
+  try {
+    localStorage.removeItem(clave)
+  } catch {
+    // Si el almacenamiento no está disponible no hay nada que borrar.
   }
 }
